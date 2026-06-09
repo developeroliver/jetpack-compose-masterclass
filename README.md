@@ -161,3 +161,84 @@ fun BoxDemo(modifier: Modifier = Modifier) {
 ```
 
 </details>
+
+---
+
+<details>
+<summary><strong>FlowRow & FlowColumn</strong></summary>
+
+<br>
+
+**`FlowRow`** — comme `Row`, mais passe automatiquement à la ligne suivante quand les enfants dépassent la largeur disponible.  
+**`FlowColumn`** — idem en vertical.
+
+> API expérimentale : annoter avec `@OptIn(ExperimentalLayoutApi::class)`.
+
+### Paramètres principaux
+
+| Paramètre | Rôle |
+|---|---|
+| `horizontalArrangement` | Espacement horizontal des enfants sur chaque ligne |
+| `verticalArrangement` | Espacement vertical entre les lignes |
+| `maxItemsInEachRow` | Nombre maximum d'éléments par ligne |
+| `maxLines` | Nombre maximum de lignes affichées |
+| `overflow` | Comportement quand le contenu dépasse (`Clip`, `Visible`, `expandOrCollapseIndicator`) |
+
+### Overflow — expand / collapse
+
+`FlowRowOverflow.expandOrCollapseIndicator` permet d'afficher un bouton personnalisé pour étendre ou réduire le contenu qui dépasse `maxLines`.
+
+```kotlin
+overflow = FlowRowOverflow.expandOrCollapseIndicator(
+    expandIndicator = {
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Expand")
+        }
+    },
+    collapseIndicator = {
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Collapse")
+        }
+    }
+)
+```
+
+### Range Kotlin
+
+```kotlin
+for (i in 1..30) { ... }   // range inclusif de 1 à 30
+```
+
+### Exemple
+
+```kotlin
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun FlowLayoutDemo(modifier: Modifier = Modifier) {
+    FlowRow(
+        modifier = modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.Center,
+        maxItemsInEachRow = 3,
+        maxLines = 4,
+        overflow = FlowRowOverflow.expandOrCollapseIndicator(
+            expandIndicator = {
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Expand")
+                }
+            },
+            collapseIndicator = {
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Collapse")
+                }
+            }
+        )
+    ) {
+        for (i in 1..30) {
+            AssistChip(onClick = {}, label = { Text("Item $i") })
+        }
+    }
+}
+```
+
+</details>
