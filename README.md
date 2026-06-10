@@ -432,3 +432,67 @@ scope.launch {
 - `currentSnackbarData` est `null` quand aucune snackbar n'est active → `AnimatedVisibility` gère l'entrée/sortie automatiquement
 
 </details>
+
+---
+
+<details>
+<summary><strong>WindowSizeClass — Layouts adaptatifs</strong></summary>
+
+<br>
+
+**`WindowSizeClass`** — permet d'adapter le layout selon la taille de l'écran (téléphone, tablette, pliable).
+
+### Dépendance
+
+```kotlin
+implementation("androidx.compose.material3.adaptive:adaptive")
+```
+
+### Breakpoints
+
+| Constante | Largeur minimale |
+|---|---|
+| `WIDTH_DP_MEDIUM_LOWER_BOUND` | 600dp |
+| `WIDTH_DP_EXPANDED_LOWER_BOUND` | 840dp |
+
+### API actuelle
+
+`WindowWidthSizeClass.COMPACT/MEDIUM/EXPANDED` est déprécié. Utiliser `isWidthAtLeastBreakpoint()` sur `WindowSizeClass` :
+
+```kotlin
+val windowClass = currentWindowAdaptiveInfo().windowSizeClass
+
+when (windowClass.windowWidthSizeClass) {
+    WindowWidthSizeClass.COMPACT,
+    WindowWidthSizeClass.MEDIUM -> {
+        MyLazyList()
+    }
+    WindowWidthSizeClass.EXPANDED -> {
+        Row(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(3f)
+                    .background(Color.Red)
+            ) {
+                Text("Menu option 1")
+                Text("Menu option 2")
+                Text("Menu option 3")
+            }
+            MyLazyList(
+                modifier = Modifier
+                    .weight(7f)
+                    .fillMaxHeight()
+            )
+        }
+    }
+}
+```
+
+### Points clés
+
+- `currentWindowAdaptiveInfo()` retourne toujours **compact** dans les previews — tester sur un émulateur tablette pour voir le layout expanded
+- Passer `windowSizeClass` en paramètre au composable de contenu permet de le prévisualiser avec `WindowSizeClass.compute(width, height)`
+- Le `modifier` des composables enfants doit utiliser le paramètre `modifier` (minuscule), pas `Modifier` (majuscule) pour que `weight()` et `fillMaxHeight()` passés par l'appelant soient bien appliqués
+
+</details>
