@@ -311,3 +311,56 @@ fun LazyListDemo(modifier: Modifier = Modifier) {
 ```
 
 </details>
+
+---
+
+<details>
+<summary><strong>LazyVerticalGrid & LazyHorizontalGrid</strong></summary>
+
+<br>
+
+**`LazyVerticalGrid`** — grille verticale paresseuse, ne compose que les cellules visibles.  
+**`LazyHorizontalGrid`** — idem en horizontal.
+
+### GridCells — définir les colonnes
+
+| Valeur | Comportement |
+|---|---|
+| `GridCells.Fixed(n)` | Exactement `n` colonnes de largeur égale |
+| `GridCells.FixedSize(dp)` | Colonnes d'une largeur fixe en dp, autant que possible |
+| `GridCells.Adaptive(minDp)` | Colonnes d'au moins `minDp`, le nombre s'adapte à la largeur disponible |
+
+> `Adaptive` est la valeur la plus responsive : elle calcule automatiquement le nombre de colonnes selon l'écran.
+
+### Paramètres principaux
+
+| Paramètre | Rôle |
+|---|---|
+| `columns` | Définit la structure des colonnes (`GridCells`) |
+| `verticalArrangement` | Espacement vertical entre les lignes |
+| `horizontalArrangement` | Espacement horizontal entre les colonnes |
+| `contentPadding` | Padding intérieur autour du contenu |
+
+### Exemple
+
+```kotlin
+@Composable
+fun LazyGridDemo(modifier: Modifier = Modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(80.dp),
+        modifier = Modifier.padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(50) {
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(Color(Random.nextInt()))
+            )
+        }
+    }
+}
+```
+
+</details>
