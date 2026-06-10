@@ -242,3 +242,72 @@ fun FlowLayoutDemo(modifier: Modifier = Modifier) {
 ```
 
 </details>
+
+---
+
+<details>
+<summary><strong>LazyColumn & LazyRow</strong></summary>
+
+<br>
+
+**`LazyColumn`** — liste verticale qui ne compose que les éléments visibles à l'écran (équivalent `RecyclerView`).  
+**`LazyRow`** — idem en horizontal.
+
+> Contrairement à `Column`/`Row`, les enfants doivent être déclarés via des fonctions DSL (`item`, `items`, `stickyHeader`…), pas directement comme composables.
+
+### DSL LazyListScope
+
+| Fonction | Rôle |
+|---|---|
+| `item { }` | Ajoute un seul élément |
+| `items(n) { i -> }` | Ajoute `n` éléments indexés |
+| `stickyHeader { }` | En-tête qui reste affiché en haut pendant le scroll |
+
+### Paramètres principaux
+
+| Paramètre | Rôle |
+|---|---|
+| `verticalArrangement` | Espacement vertical entre les items (`LazyColumn`) |
+| `horizontalArrangement` | Espacement horizontal entre les items (`LazyRow`) |
+| `contentPadding` | Padding intérieur autour du contenu (n'affecte pas le fond) |
+
+### Erreurs courantes
+
+- Placer un composable directement dans `LazyColumn` sans `item { }` : erreur de compilation car seules les fonctions DSL sont acceptées dans le bloc.
+- Enchaîner `.background()` avec une virgule après le modifier précédent : la virgule termine l'argument, `.background()` n'est plus dans la chaîne.
+
+### Exemple
+
+```kotlin
+@Composable
+fun LazyListDemo(modifier: Modifier = Modifier) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        item {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(10) { i ->
+                    Box(modifier = Modifier.size(100.dp).background(Color(Random.nextInt())))
+                }
+            }
+        }
+        items(100) { i -> Text("Item $i") }
+        stickyHeader {
+            Text(
+                text = "STICKY HEADER",
+                modifier = Modifier.fillMaxWidth().background(Color.Green)
+            )
+        }
+        item {
+            Text(
+                text = "Reached the end of the list!",
+                modifier = Modifier.fillMaxWidth().background(Color.Red)
+            )
+        }
+    }
+}
+```
+
+</details>
