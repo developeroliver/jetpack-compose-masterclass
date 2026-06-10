@@ -364,3 +364,71 @@ fun LazyGridDemo(modifier: Modifier = Modifier) {
 ```
 
 </details>
+
+---
+
+<details>
+<summary><strong>Scaffold & Snackbar animée</strong></summary>
+
+<br>
+
+**`Scaffold`** — structure de base Material 3 : `topBar`, `bottomBar`, `floatingActionButton`, `snackbarHost`.
+
+### Snackbar personnalisée
+
+Le `SnackbarHost` standard utilise une animation interne (fade/scale) non remplaçable. Pour une animation slide-from-bottom avec couleur personnalisée, on crée un composable séparé qui lit `hostState.currentSnackbarData` et le passe à `AnimatedVisibility`.
+
+```kotlin
+@Composable
+fun AnimatedSnackbarHost(hostState: SnackbarHostState) {
+    val currentSnackbarData = hostState.currentSnackbarData
+    AnimatedVisibility(
+        visible = currentSnackbarData != null,
+        enter = slideInVertically(
+            initialOffsetY = { it },
+            animationSpec = tween(durationMillis = 300)
+        ) + fadeIn(animationSpec = tween(300)),
+        exit = slideOutVertically(
+            targetOffsetY = { it },
+            animationSpec = tween(durationMillis = 200)
+        ) + fadeOut(animationSpec = tween(200))
+    ) {
+        currentSnackbarData?.let { data ->
+            Snackbar(
+                snackbarData = data,
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFF6200EE),
+                contentColor = Color.White
+            )
+        }
+    }
+}
+```
+
+Utilisation dans `Scaffold` :
+
+```kotlin
+snackbarHost = {
+    AnimatedSnackbarHost(hostState = snackBarState)
+}
+```
+
+### Afficher la Snackbar
+
+```kotlin
+val snackBarState = remember { SnackbarHostState() }
+val scope = rememberCoroutineScope()
+
+// Dans un onClick :
+scope.launch {
+    snackBarState.showSnackbar(message = "Clicked FAB")
+}
+```
+
+### Points clés
+
+- `slideInVertically { it }` — l'offset initial est égal à la hauteur totale du composable (entre par le bas)
+- `+` combine deux animations (`slideIn + fadeIn`)
+- `currentSnackbarData` est `null` quand aucune snackbar n'est active → `AnimatedVisibility` gère l'entrée/sortie automatiquement
+
+</details>
